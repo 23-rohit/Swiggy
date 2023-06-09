@@ -1,12 +1,9 @@
 from django.db import models
-
-# Create your models here.
-from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 
 
 class MyUserManager(BaseUserManager):
-    def create_user(self, email, password=None):
+    def create_user(self, email, date_of_birth=None,password=None):
         """
         Creates and saves a User with the given email, date of
         birth and password.
@@ -16,14 +13,14 @@ class MyUserManager(BaseUserManager):
 
         user = self.model(
             email=self.normalize_email(email),
-           
+        
         )
 
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email, password=None):
+    def create_superuser(self, email, date_of_birth=None, password=None):
         """
         Creates and saves a superuser with the given email, date of
         birth and password.
@@ -31,7 +28,7 @@ class MyUserManager(BaseUserManager):
         user = self.create_user(
             email,
             password=password,
-          
+           
         )
         user.is_admin = True
         user.save(using=self._db)
@@ -44,9 +41,25 @@ class MyUser(AbstractBaseUser):
         max_length=255,
         unique=True,
     )
-    date_of_birth = models.DateField()
+    first_name=models.CharField(max_length=20,null=True,blank=True)
+    last_name=models.CharField(max_length=20,null=True,blank=True)
+    date_of_birth = models.DateField(null=True,blank=True)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
+    mobile_number = models.IntegerField(max_length=20,null=True,blank=True)
+    otp = models.IntegerField(max_length=6,null=True,blank=True)
+    otp_verify = models.BooleanField(default=True)
+    otp_expire = models.DateField(null=True,blank=True)
+    
+    USER_TYPES = (
+        (1 , 'Restaurant'),
+        (2 , 'Customer'),
+        (3 , 'Driver')
+    )
+    USER_TYPES = models.IntegerField(
+        choices = USER_TYPES,
+        default = 1
+    )
 
     objects = MyUserManager()
 
