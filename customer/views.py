@@ -19,7 +19,7 @@ class LoginCustomerViews(APIView):
             user = users.first()
             # user.otp_creation()
             # user.send_otp()
-            return Response({"message":"Login Successfully."})
+            return Response({"message":"otp sent Successfully."})
         
         else:
             return Response({"message":"The mobile number does not exist."})
